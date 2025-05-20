@@ -45,9 +45,6 @@ namespace dotnet_folder_sync
             var targetDict = targetFolderFiles.Select(file => new FileMetadata(file, target)).ToList().ToDictionary(key => key.RelativePath, value => value);
 
             var toCopyFromSourceToTarget = sourceDict.Keys.Except(targetDict.Keys).Select(x => sourceDict[x]);
-            var toDeleteFromTarget = targetDict.Keys.Except(sourceDict.Keys).Select(x => targetDict[x]);
-            var toReplaceInTarget = sourceDict.Keys.Intersect(targetDict.Keys).Select(x => sourceDict[x]);
-
             foreach (var file in toCopyFromSourceToTarget)
             {
                 var targetPath = file.ReplaceBasePath(source, target);
@@ -56,6 +53,7 @@ namespace dotnet_folder_sync
                 _logger.LogInformation($"CREATE: [{targetPath}]");
             }
 
+            var toReplaceInTarget = sourceDict.Keys.Intersect(targetDict.Keys).Select(x => sourceDict[x]);
             foreach (var file in toReplaceInTarget)
             {
                 var targetPath = file.ReplaceBasePath(source, target);
@@ -70,6 +68,7 @@ namespace dotnet_folder_sync
                 _logger.LogInformation($"COPY - OVERWRITE: [{targetPath}]");
             }
 
+            var toDeleteFromTarget = targetDict.Keys.Except(sourceDict.Keys).Select(x => targetDict[x]);
             foreach (var file in toDeleteFromTarget)
             {
                 var targetPath = file.ReplaceBasePath(source, target);
@@ -105,7 +104,6 @@ namespace dotnet_folder_sync
                 }
                 Directory.Delete(path, true);
                 _logger.LogInformation($"DELETE [Recursive]: [{path}]");
-
             }
         }
     }
