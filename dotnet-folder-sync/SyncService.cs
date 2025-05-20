@@ -41,8 +41,8 @@ namespace dotnet_folder_sync
             var sourceFolderFiles = source.GetAllFiles().ToList();
             var targetFolderFiles = target.GetAllFiles().ToList();
 
-            var sourceDict = sourceFolderFiles.Select(file => new FileMetadata(file, source)).ToList().ToDictionary(key => key.RelativePath, value => value);
-            var targetDict = targetFolderFiles.Select(file => new FileMetadata(file, target)).ToList().ToDictionary(key => key.RelativePath, value => value);
+            var sourceDict = sourceFolderFiles.Select(file => new FileMetadata(file, source)).ToDictionary(key => key.RelativePath, value => value);
+            var targetDict = targetFolderFiles.Select(file => new FileMetadata(file, target)).ToDictionary(key => key.RelativePath, value => value);
 
             var toCopyFromSourceToTarget = sourceDict.Keys.Except(targetDict.Keys).Select(x => sourceDict[x]);
             foreach (var file in toCopyFromSourceToTarget)
