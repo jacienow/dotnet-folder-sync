@@ -50,7 +50,7 @@ namespace dotnet_folder_sync
 
             foreach (var file in toCopyFromSourceToTarget)
             {
-                var targetPath = file.FileInfo.FullName.Replace(source, target);
+                var targetPath = file.ReplaceBasePath(source, target);
 
                 File.Copy(file.FileInfo.FullName, targetPath, false);
                 _logger.LogInformation($"CREATE: [{targetPath}]");
@@ -58,7 +58,7 @@ namespace dotnet_folder_sync
 
             foreach (var file in toReplaceInTarget)
             {
-                var targetPath = file.FileInfo.FullName.Replace(source, target);
+                var targetPath = file.ReplaceBasePath(source, target);
 
                 if (file.Hash == targetDict[file.RelativePath].Hash)
                 {
@@ -72,7 +72,7 @@ namespace dotnet_folder_sync
 
             foreach (var file in toDeleteFromTarget)
             {
-                var targetPath = file.FileInfo.FullName.Replace(source, target);
+                var targetPath = file.ReplaceBasePath(source, target);
 
                 File.Delete(file.FileInfo.FullName);
                 _logger.LogInformation($"DELETE: [{targetPath}]");
@@ -81,8 +81,8 @@ namespace dotnet_folder_sync
 
         private void SyncDirectories(string source, string target)
         {
-            var sourceDirs = source.GetAllDirectories().ToDictionary(key => key.FullName.Replace(source, string.Empty).RemoveLeadingBackslashes());
-            var targetDirs = target.GetAllDirectories().ToDictionary(key => key.FullName.Replace(target, string.Empty).RemoveLeadingBackslashes());
+            var sourceDirs = source.GetAllDirectories();
+            var targetDirs = target.GetAllDirectories();
             var dirsToCopyFromSourceToTarget = sourceDirs.Keys.Except(targetDirs.Keys);
             var dirsToRemoveFromTarget = targetDirs.Keys.Except(sourceDirs.Keys);
 
