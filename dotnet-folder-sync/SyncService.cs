@@ -53,7 +53,7 @@ namespace dotnet_folder_sync
                 var targetPath = file.FileInfo.FullName.Replace(source, target);
 
                 File.Copy(file.FileInfo.FullName, targetPath, false);
-                _logger.LogInformation($"FILE CREATE: [{targetPath}]");
+                _logger.LogInformation($"CREATE: [{targetPath}]");
             }
 
             foreach (var file in toReplaceInTarget)
@@ -62,12 +62,12 @@ namespace dotnet_folder_sync
 
                 if (file.Hash == targetDict[file.RelativePath].Hash)
                 {
-                    _logger.LogInformation($"SKIP FILE OVERWRITE [Hash match]: [{targetPath}]");
+                    _logger.LogInformation($"SKIP COPY - OVERWRITE [Hash match]: [{targetPath}]");
                     continue;
                 }
 
                 File.Copy(file.FileInfo.FullName, targetPath, true);
-                _logger.LogInformation($"FILE OVERWRITE: [{targetPath}]");
+                _logger.LogInformation($"COPY - OVERWRITE: [{targetPath}]");
             }
 
             foreach (var file in toDeleteFromTarget)
@@ -75,7 +75,7 @@ namespace dotnet_folder_sync
                 var targetPath = file.FileInfo.FullName.Replace(source, target);
 
                 File.Delete(file.FileInfo.FullName);
-                _logger.LogInformation($"FILE DELETE: [{targetPath}]");
+                _logger.LogInformation($"DELETE: [{targetPath}]");
             }
         }
 
@@ -91,15 +91,21 @@ namespace dotnet_folder_sync
                 var path = Path.Combine(target, dir);
                 Directory.CreateDirectory(path);
 
-                _logger.LogInformation($"DIRECTORY CREATE: [{path}]");
+                _logger.LogInformation($"CREATE: [{path}]");
             }
 
             foreach (var dir in dirsToRemoveFromTarget)
             {
                 var path = Path.Combine(target, dir);
-                Directory.Delete(path);
+                if (!Directory.Exists(path))
+                {
+                    _logger.LogInformation($"SKIP DELETE [No longer exists]: [{path}]");
+                    continue;
+                    
+                }
+                Directory.Delete(path, true);
+                _logger.LogInformation($"DELETE [Recursive]: [{path}]");
 
-                _logger.LogInformation($"DIRECTORY DELETE: [{path}]");
             }
         }
     }
