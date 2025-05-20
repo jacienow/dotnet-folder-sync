@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace dotnet_folder_sync
 {
@@ -10,13 +9,7 @@ namespace dotnet_folder_sync
 
         public static FileInfo[] GetAllFiles(this string path, string searchPattern = "*") => new DirectoryInfo(path).GetFiles(searchPattern, SearchOption.AllDirectories);
 
-        public static string RemoveLeadingBackslashes(this string input)
-        {
-            var regex = new Regex(@"^\\+");
-            var value = regex.Replace(input, string.Empty);
-
-            return value;
-        }
+        public static string RemoveLeadingBackslashes(this string input) => new Regex(@"^\\+").Replace(input, string.Empty);
 
         public static string ReplaceBasePath(this FileMetadata fileMetadata, string source, string target) => fileMetadata.FileInfo.FullName.Replace(source, target);
     }
