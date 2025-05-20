@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "dotnet-folder-sync": {
+      "commandName": "Project",
+      "commandLineArgs": "--source \"F:\\dotnet sync\\App test\" --target \"F:\\dotnet sync\\App test copy\" --logs-dir \"F:\\dotnet sync\\logs\" --interval 1"
+    }
+  }
+}
